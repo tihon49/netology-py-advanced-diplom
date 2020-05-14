@@ -61,6 +61,35 @@ class User:
 
             return data
 
+    #получение данных текущего экземпляра класса
+    def get_info_about_me(self, fields):
+        url = 'https://api.vk.com/method/users.get'
+        params = {'access_token': access_token,
+                  'user_ids': self.id,
+                  'fields': fields,
+                  'v': VERSION
+                  }
+        data = self.get_response(url, params)
+        return data
+
+    #поиск пользователей по заданным параметрам
+    def search_users(self, fields, sex, age_from, age_to):
+        url = 'https://api.vk.com/method/users.search'
+        params = {'access_token': access_token,
+                  'q': '',
+                  'count': 10,
+                  'fields': fields,
+                  'city': 1,
+                  'country': 1,
+                  'sex': sex,
+                  'status': 6,
+                  'age_from': age_from,
+                  'age_to': age_to,
+                  'v': VERSION
+                  }
+        data = self.get_response(url, params)
+        return data
+        
     #получаем возраст пользователя
     def get_user_info(self):
         url = 'https://api.vk.com/method/users.get'
