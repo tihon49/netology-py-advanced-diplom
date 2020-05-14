@@ -2,6 +2,7 @@ from vk_api_userclass import User
 from pprint import pprint
 from datetime import datetime, date
 from pymongo import MongoClient
+import pandas as pd
 
 
 
@@ -73,10 +74,23 @@ def write_in_database(db, lst):
 
 
 
+#анализ данных
+def panda_analis():
+    #создаем дата фрейм
+    cols = ['id', 'first_name', 'last_name', 'bdate', 'city.title', 'photo_max', 'is_friend',
+            'twitter', 'instagram', 'university', 'home_town', 'relation', 'personal.smoking',
+            'personal.alcohol', 'personal.religion_id', 'interests', 'music', 'activities',
+            'movies','tv','books','games','universities','schools','about','relatives','quotes']
+    df = pd.read_csv('vk_inder.csv', usecols=cols).set_index('id')
+    
+
+
+
 def main():
     check_user_id(users_collection)
     lst = filter_users(users_collection, raw_users_list)
     write_in_database(users_collection, lst)
+    # panda_analis()
 
 
 
