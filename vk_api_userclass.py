@@ -77,7 +77,7 @@ class User:
         url = 'https://api.vk.com/method/users.search'
         params = {'access_token': access_token,
                   'q': '',
-                  'count': 10,
+                  'count': 1000,
                   'fields': fields,
                   'city': 1,
                   'country': 1,
