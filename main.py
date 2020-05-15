@@ -18,16 +18,16 @@ age_to = 35
 tihon = User('tihon333')
 tihon_info = tihon.get_info_about_me(fields)['response'][0] #дикт с данными о пользователе
 
-raw_users_list = tihon.search_users(fields, sex, age_from, age_to)
-raw_users_list = raw_users_list['response']['items'] #сырой список кандидатов
+#сырой список кандидатов
+raw_users_list = tihon.search_users(fields, sex, age_from, age_to)['response']['items']
 
 
 
 #функция получения id пользователей из БД
 def check_user_id(db):
     '''
-    получаем данные из ДБ, если ДБ не пустая - создаем список id
-    пользователей которые есть в БД и возвращаем список id.
+    получаем данные из коллекции, если коллекция не пустая - создаем список id
+    пользователей которые есть в коллекции и возвращаем список id.
     '''
     users = list(db.find())
     users_ids = []
@@ -82,17 +82,17 @@ def panda_analis(db):
             'personal.alcohol', 'personal.religion_id', 'interests', 'music', 'activities',
             'movies','tv','books','games','universities','schools','about','relatives','quotes']
     # df = pd.read_csv('vk_inder.csv', usecols=cols).set_index('id')
-    # df = pd.DataFrame(list(db.find()))
-    # print(df.city)
+    df = pd.DataFrame(list(db.find()))
+    print(df.city)
     
 
 
-
 def main():
-    check_user_id(users_collection)
     lst = filter_users(users_collection, raw_users_list)
+    lst2 = filter_users(tihon_collection, [tihon_info])
     write_in_database(users_collection, lst)
-    panda_analis(users_collection)
+    write_in_database(tihon_collection, lst2)
+    # panda_analis(users_collection)
 
 
 
@@ -100,4 +100,5 @@ if __name__ == "__main__":
     client = MongoClient()
     users_DB = client['VK_Inder']
     users_collection = users_DB['users']
+    tihon_collection = users_DB['tihon']
     main()
