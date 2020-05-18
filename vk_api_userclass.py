@@ -183,7 +183,7 @@ class User:
                   }
 
         data = self.get_response(url, params)
-        return data
+        return data['response']['items']
 
     # получаем список с друзьями. type => list
     def get_friends(self):

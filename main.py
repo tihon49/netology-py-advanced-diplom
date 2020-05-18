@@ -15,11 +15,14 @@ sex = 1
 age_from = 25
 age_to = 35
 
-tihon = User('tihon333')
-tihon_info = tihon.get_info_about_me(fields)['response'][0] #дикт с данными о пользователе
+
+user_name = input('Введите имя пользователя: ')
+user = User(user_name)
+user_groups_list = user.get_groups_ids()
+user_info = user.get_info_about_me(fields)['response'][0] #дикт с данными о пользователе
 
 #сырой список кандидатов
-raw_users_list = tihon.search_users(fields, sex, age_from, age_to)['response']['items']
+raw_users_list = user.search_users(fields, sex, age_from, age_to)['response']['items']
 
 
 
@@ -75,24 +78,76 @@ def write_in_database(db, lst):
 
 
 #анализ данных
-def panda_analis(db):
-    #создаем дата фрейм
-    cols = ['id', 'first_name', 'last_name', 'bdate', 'city.title', 'photo_max', 'is_friend',
-            'twitter', 'instagram', 'university', 'home_town', 'relation', 'personal.smoking',
-            'personal.alcohol', 'personal.religion_id', 'interests', 'music', 'activities',
-            'movies','tv','books','games','universities','schools','about','relatives','quotes']
-    # df = pd.read_csv('vk_inder.csv', usecols=cols).set_index('id')
-    df = pd.DataFrame(list(db.find()))
-    print(df.city)
+def panda_analis(single_user_db, many_users_db):
+    user_df = pd.DataFrame(list(single_user_db.find())).set_index('id')
+    users_df = pd.DataFrame(list(many_users_db.find())).set_index('id')
     
+    users_df['points'] = 0
+    
+    for i in users_df.index:
+        users_df.loc[users_df.index == i, 'href'] = f'https://vk.com/id{i}'
+
+    #создаем списки пользователя
+    for i in user_df.T.iteritems():
+        user_music_list = i[1][30].split(', ')
+        user_films_list = i[1][32].split(', ')
+        user_books_list = i[1][34].split(', ')
+        user_games_list = i[1][29].split(', ')
+
+    #ищем общие группы
+    for i in user_df.T.iteritems():
+        users_id = i[0]
+        users_groups = User(users_id).get_groups_ids()
+        for group_id in user_groups_list:
+            if group_id in users_groups:
+                users_df.loc[users_df.index == i[0], 'points'] += 1
+    
+    # ищем общие книжки
+    for book in user_books_list:
+        book = book.lower()
+        for i in users_df.T.iteritems():
+            if book in str(i[1][32]).lower():
+                users_df.loc[users_df.index == i[0], 'points'] += 1
+
+    #ищем общих друзей
+    for i in users_df.T.iteritems():
+        if i[1][15] > 0:
+            users_df.loc[users_df.index == i[0], 'points'] += 1
+        # print(f'Общих друзей: {i[1][15]}')
+    
+    #ищем общую музыку
+    for music in user_music_list:
+        music = music.lower()
+        for i in users_df.T.iteritems():
+            if music in str(i[1][28]).lower():
+                users_df.loc[users_df.index == i[0], 'points'] += 1
+
+    #ищем общие фильмы
+    for film in user_films_list:
+        film = film.lower()
+        for i in users_df.T.iteritems():
+            if film in str(i[1][30]).lower():
+                users_df.loc[users_df.index == i[0], 'points'] += 1
+
+    # #ищем общие игры
+    for game in user_games_list:
+        game = game.lower()
+        for i in users_df.T.iteritems():
+            if game in str(i[1][33]).lower():
+                users_df.loc[users_df.index == i[0], 'points'] += 1
+        
+    top10 = users_df[users_df['points'] > 0].sort_values(['points'], ascending=False).head(10)
+    return top10
 
 
 def main():
     lst = filter_users(users_collection, raw_users_list)
-    lst2 = filter_users(tihon_collection, [tihon_info])
+    lst2 = filter_users(user_collection, [user_info])
     write_in_database(users_collection, lst)
-    write_in_database(tihon_collection, lst2)
-    # panda_analis(users_collection)
+    write_in_database(user_collection, lst2)
+
+    filter = ['first_name', 'last_name', 'points', 'href']
+    print(panda_analis(user_collection, users_collection)[filter])
 
 
 
@@ -100,5 +155,6 @@ if __name__ == "__main__":
     client = MongoClient()
     users_DB = client['VK_Inder']
     users_collection = users_DB['users']
-    tihon_collection = users_DB['tihon']
+    user_collection_name = input('Введите название коллекции: ')
+    user_collection = users_DB[user_collection_name]
     main()
