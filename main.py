@@ -14,13 +14,11 @@ fields = 'sex, bdate, city, country, home_town, contacts, education,'\
 sex = 1
 age_from = 25
 age_to = 35
-
-
 user_name = input('Введите имя пользователя: ')
 user = User(user_name)
 user_groups_list = user.get_groups_ids()
-user_info = user.get_info_about_me(fields)['response'][0] #дикт с данными о пользователе
-
+#дикт с данными о пользователе
+user_info = user.get_info_about_me(fields)['response'][0]
 #сырой список кандидатов
 raw_users_list = user.search_users(fields, sex, age_from, age_to)['response']['items']
 
@@ -68,7 +66,6 @@ def filter_users(db, users_list):
 
 
 
-
 #запись в базу данных
 def write_in_database(db, lst):
     '''если список не пустой => записываем его в ДБ'''
@@ -81,9 +78,14 @@ def write_in_database(db, lst):
 def panda_analis(single_user_db, many_users_db):
     user_df = pd.DataFrame(list(single_user_db.find())).set_index('id')
     users_df = pd.DataFrame(list(many_users_db.find())).set_index('id')
+
+    #получаем год рождения основного пользователя
+    for i in user_df['bdate']:
+        user_bdate = i.split('.')[2]
     
     users_df['points'] = 0
     
+    #делаем ссылку на профиль каждого пользователя
     for i in users_df.index:
         users_df.loc[users_df.index == i, 'href'] = f'https://vk.com/id{i}'
 
@@ -94,13 +96,18 @@ def panda_analis(single_user_db, many_users_db):
         user_books_list = i[1][34].split(', ')
         user_games_list = i[1][29].split(', ')
 
+    #проверяем год рождения
+    for i in users_df.T.iteritems():
+        if i[1][6].split('.')[2] == user_bdate:
+            users_df.loc[users_df.index == i[0], 'points'] += 4
+
     #ищем общие группы
     for i in user_df.T.iteritems():
         users_id = i[0]
         users_groups = User(users_id).get_groups_ids()
         for group_id in user_groups_list:
             if group_id in users_groups:
-                users_df.loc[users_df.index == i[0], 'points'] += 1
+                users_df.loc[users_df.index == i[0], 'points'] += 3
     
     # ищем общие книжки
     for book in user_books_list:
@@ -112,22 +119,21 @@ def panda_analis(single_user_db, many_users_db):
     #ищем общих друзей
     for i in users_df.T.iteritems():
         if i[1][15] > 0:
-            users_df.loc[users_df.index == i[0], 'points'] += 1
-        # print(f'Общих друзей: {i[1][15]}')
+            users_df.loc[users_df.index == i[0], 'points'] += 5
     
     #ищем общую музыку
     for music in user_music_list:
         music = music.lower()
         for i in users_df.T.iteritems():
             if music in str(i[1][28]).lower():
-                users_df.loc[users_df.index == i[0], 'points'] += 1
+                users_df.loc[users_df.index == i[0], 'points'] += 2
 
     #ищем общие фильмы
     for film in user_films_list:
         film = film.lower()
         for i in users_df.T.iteritems():
             if film in str(i[1][30]).lower():
-                users_df.loc[users_df.index == i[0], 'points'] += 1
+                users_df.loc[users_df.index == i[0], 'points'] += 2
 
     # #ищем общие игры
     for game in user_games_list:
@@ -138,6 +144,7 @@ def panda_analis(single_user_db, many_users_db):
         
     top10 = users_df[users_df['points'] > 0].sort_values(['points'], ascending=False).head(10)
     return top10
+
 
 
 def main():
