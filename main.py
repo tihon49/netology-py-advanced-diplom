@@ -61,59 +61,72 @@ def get_points(user, df):
     
     count = 0
     for u_id in df.id:
-        if count == 11:
+        if count == 20:
             break
 
-        curent_user = df.loc[df.id == u_id]
-        curent_user_groups = User(u_id).get_groups_ids()
+        curent_user = df.loc[df.id == u_id] 
 
-        # music
+        #music
         for music in pd.DataFrame(curent_user)['music']:
             for m in music.split(', '):
-                if m.lower() in user_info['music'].lower():
+                if m.lower() in [i.lower() for i in user_info['music'].split(', ')]:
                     df.loc[df.id == u_id, 'points'] += 2
+                    print(f'id{u_id} +2 music', m)
                 
         #movies
         for movies in pd.DataFrame(curent_user)['movies']:
             for m in movies.split(', '):
-                if m.lower() in user_info['movies'].lower():
+                if m.lower() in [i.lower() for i in user_info['movies'].split(', ')]:
                     df.loc[df.id == u_id, 'points'] += 1
+                    print(f'id{u_id} +1 movies', m)
 
         #games
         for games in pd.DataFrame(curent_user)['games']:
             for g in games.split(', '):
-                if g.lower() in user_info['games'].lower():
+                if g.lower() in [i.lower() for i in user_info['games'].split(', ')]:
                     df.loc[df.id == u_id, 'points'] += 1
+                    print(f'id{u_id} +1 games', g)
         
         #books
         for books in pd.DataFrame(curent_user)['books']:
             for b in books.split(', '):
-                if b.lower() in user_info['books'].lower():
+                if b.lower() in [i.lower() for i in user_info['books'].split(', ')]:
                     df.loc[df.id == u_id, 'points'] += 1
+                    print(f'id{u_id} +1 books', b)
                     
         #tv
         for tv in pd.DataFrame(curent_user)['tv']:
             for t in tv.split(', '):
-                if t.lower() in user_info['tv'].lower():
+                if t.lower() in [i.lower() for i in user_info['tv'].split(', ')]:
                     df.loc[df.id == u_id, 'points'] += 1
+                    print(f'id{u_id} +1 tv', t)
         
         #bdate
         for bd in pd.DataFrame(curent_user)['bdate']:
             if bd.split('.')[2] == user_info['bdate']:
                 df.loc[df.id == u_id, 'points'] += 4
+                print(f"id{u_id} +4 bdate", bd.split('.')[2])
                 
         #groups
-        for group in user_groups:
-            if group in curent_user_groups:
-                df.loc[df.id == u_id, 'points'] += 3
+        try:
+            curent_user_groups = User(u_id).get_groups_ids()
+            for group in user_groups:
+                if group in curent_user_groups:
+                    df.loc[df.id == u_id, 'points'] += 3
+                    print(f'id{u_id} +3 group', group)
+        except:
+            pass
+
+
         
         print('.')
         count += 1
 
-    top10 = df[df['points'] > 0].head(10)
+    top10 = df[df['points'] > 0].sort_values(['points'], ascending=False).head(10)
     create_hrefs(top10)
     new_filter = ['first_name', 'last_name', 'points', 'href']
-    return top10[new_filter]
+    top10 = top10[new_filter] 
+    return top10.to_dict(orient="index")
 
 
 
@@ -161,10 +174,10 @@ def main():
     df['points'] = 0
     df = df.fillna('')
     top10 = get_points(user, df)
-    top10_collection = users_DB['top10']
-    write_in_database(top10_collection, [top10.to_dict()])
 
-
+    # top10_collection = users_DB['top10']
+    # write_in_database(top10_collection, [top10])
+    print(top10)
 
 
 if __name__ == "__main__":

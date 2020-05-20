@@ -183,18 +183,19 @@ class User:
 
     #id всех групп пользователя
     def get_groups_ids(self):
-        url = f'https://api.vk.com/method/execute'
+        url = f'https://api.vk.com/method/groups.get'
         params = {'access_token': access_token,
                   'user_id': self.id,
-                  'code': 'return API.groups.get();',
+                  'extended': 1,
+                  'fields': 'members_count,counters,contacts,city,country',
+                  'count': 1000,
                   'v': VERSION
                   }
 
         data = self.get_response(url, params)
-        try:
-            return data['response']['items']
-        except KeyError:
-            pass
+
+        return [g['id'] for g in data['response']['items']]
+
 
     # получаем список с друзьями. type => list
     def get_friends(self):
@@ -256,3 +257,9 @@ class User:
 
             print(f'\nбольше всего общих друзей с пользователем: '
                   f'id{max_friends_id} - {max_count_of_friends}', end='')
+
+
+if __name__ == '__main__':
+    user = User(10837418)
+    groups = user.get_groups_ids()
+    pprint(groups)
