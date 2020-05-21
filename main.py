@@ -117,8 +117,6 @@ def get_points(user, df):
         except:
             pass
 
-
-        
         print('.')
         # count += 1
 
@@ -178,6 +176,7 @@ def main():
     top10_collection = users_DB['top10']
     write_in_database(top10_collection, top10)
     pprint(top10)
+
 
 
 if __name__ == "__main__":
