@@ -25,7 +25,7 @@ class User:
         if data.get('response'):
             self.id = data['response'][0]['id']
         elif data.get('error'):
-            self.id = data['error']['error_msg']
+            self.id = 'Invalid user id'
 
     # при вызове функции print(user) вывод ссылки на его профиль в VK
     def __str__(self):
@@ -76,7 +76,7 @@ class User:
     #         return 'Пользователь не найден'
 
     #поиск пользователей по заданным параметрам
-    def search_users(self, fields, sex, age_from, age_to):
+    def search_users(self, fields, sex=1, age_from=20, age_to=30):
         url = 'https://api.vk.com/method/users.search'
         params = {'access_token': access_token,
                   'q': '',
@@ -260,6 +260,4 @@ class User:
 
 
 if __name__ == '__main__':
-    user = User(10837418)
-    groups = user.get_groups_ids()
-    pprint(groups)
+    pass

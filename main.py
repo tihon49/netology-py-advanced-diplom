@@ -55,7 +55,6 @@ def get_points(user, df):
     с пользователями для проверки.
     """
 
-    user_info = user.get_user_info()
     user_info = check_users_params(user)
     user_groups = user.get_groups_ids()
     
@@ -179,27 +178,69 @@ def main(users_collection):
 
 
 
+def sex_check():
+    try:
+        sex = int(input('Укажите пол для поиска\nженский = 1\nмужской = 2\n=> '))
+        if sex == 1 or sex == 2:
+            return sex
+        else:
+            print('так как выбрано не верное число - ищем девушек :)')
+            return 1
+    except:
+        return 1
+
+
+
+def age_from_foo():
+    try:
+        age = int(input('Укажите минимальный возраст для поиска: '))
+    except:
+        age = 20
+    return age
+
+
+
+def age_to_foo():
+    try:
+        age = int(input('Укажите максимальный возраст для поиска: '))
+    except:
+        age = 30
+    return age
+
+
+
+def check_user_name():
+    user_name = input('Введите id пользователя для которого ищем кандидатуру: ')
+    if User(user_name).id == 'Invalid user id' or User(user_name).id == '':
+        return 'Invalid user id'
+    else:
+        return User(user_name)
+
+
+
 if __name__ == "__main__":
     fields = 'id, about, activities, books, city, common_count, country,\
               first_name, games, bdate, home_town, interests,\
               last_name, movies, music, tv'
-    sex = int(input('Укажите пол для поиска\nженский = 1\nмужской = 2\n=> '))
-    age_from = int(input('Укажите минимальный возраст для поиска: '))
-    age_to = int(input('Укажите максимальный возраст для поиска: '))
-    user_name = input('Введите id пользователя для которого ищем кандидатуру: ')
-    user = User(user_name)
-    raw_users_list = user.search_users(fields, sex, age_from, age_to)['response']['items']
-    client = MongoClient()
-    users_DB = client['VK_Inder']
-    users_DB.top10.drop()
-    top10_collection = users_DB['top10']
-    if sex == 1:
-        users_collection_wooman = users_DB['users_wooman']
-        main(users_collection_wooman)
-    elif sex == 2:
-        users_collection_man = users_DB['users_man']
-        main(users_collection_man)
+    sex = sex_check()
+    age_from = age_from_foo()
+    age_to = age_to_foo()
+    user = check_user_name()
+    if user != 'Invalid user id':
+        raw_users_list = user.search_users(fields, sex, age_from, age_to)['response']['items']
+        client = MongoClient()
+        users_DB = client['VK_Inder']
+        users_DB.top10.drop()
+        top10_collection = users_DB['top10']
+        if sex == 1:
+            users_collection_wooman = users_DB['users_wooman']
+            main(users_collection_wooman)
+        elif sex == 2:
+            users_collection_man = users_DB['users_man']
+            main(users_collection_man)
+        else:
+            print('Не верно указан пол. Должно быть 1 или 2')
     else:
-        print('Не верно указан пол. Должно быть 1 или 2')
+        print('Нет пользователя с указанныс id')
     
     
