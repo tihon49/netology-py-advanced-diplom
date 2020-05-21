@@ -25,7 +25,7 @@ class User:
         if data.get('response'):
             self.id = data['response'][0]['id']
         elif data.get('error'):
-            self.id = data['error']['error_msg']
+            self.id = 'Invalid user id'
 
     # при вызове функции print(user) вывод ссылки на его профиль в VK
     def __str__(self):
@@ -76,7 +76,7 @@ class User:
     #         return 'Пользователь не найден'
 
     #поиск пользователей по заданным параметрам
-    def search_users(self, fields, sex, age_from, age_to):
+    def search_users(self, fields, sex=1, age_from=20, age_to=30):
         url = 'https://api.vk.com/method/users.search'
         params = {'access_token': access_token,
                   'q': '',
@@ -92,7 +92,24 @@ class User:
                   }
         data = self.get_response(url, params)
         return data
-        
+
+    #получаем фотки
+    def get_photos(self):
+        url = 'https://api.vk.com/method/photos.get'
+        params = {
+                'access_token': access_token,
+                'v': VERSION,
+                'user_id': self.id,
+                'extended': 1,
+                'count': 1000,
+                'album_id': 'profile'
+            }
+        data = self.get_response(url, params)
+        try:
+            return data['response']['items']
+        except:
+            return None
+      
     #получаем инфо о пользователе если указан возраст
     def get_user_info(self):
         url = 'https://api.vk.com/method/users.get'
@@ -260,6 +277,8 @@ class User:
 
 
 if __name__ == '__main__':
-    user = User(10837418)
-    groups = user.get_groups_ids()
-    pprint(groups)
+    tihon = User(418159898)
+    photos_likes_counter_list = []
+    for i in (photo['likes'] for photo in tihon.get_photos()):
+        photos_likes_counter_list.append(i['count'])
+    pprint(sorted(photos_likes_counter_list))

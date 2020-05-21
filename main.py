@@ -3,6 +3,7 @@ from pprint import pprint
 from datetime import datetime, date
 from pymongo import MongoClient
 import pandas as pd
+import json
 
 
 
@@ -55,7 +56,6 @@ def get_points(user, df):
     с пользователями для проверки.
     """
 
-    user_info = user.get_user_info()
     user_info = check_users_params(user)
     user_groups = user.get_groups_ids()
     
@@ -116,17 +116,63 @@ def get_points(user, df):
                     print(f'id{u_id} +3 group', group)
         except:
             pass
-
-
         
+        #get photos
+        try:
+            top3_photos_list = top3_photos(User(u_id).get_photos())
+            urls = [i['url'] for i in top3_photos_list]
+            df.loc[df.id == u_id, 'top3_photos'] = ('    ').join(urls)
+        except TypeError:
+            pass
+
         print('.')
         count += 1
 
     top10 = df[df['points'] > 0].sort_values(['points'], ascending=False).head(10)
     create_hrefs(top10)
-    new_filter = ['id', 'first_name', 'last_name', 'points', 'href']
-    top10 = top10[new_filter]
-    return top10.to_dict()
+    new_filter = ['first_name', 'last_name', 'points', 'top3_photos', 'href']
+    top10 = top10[new_filter] 
+    return top10.to_dict('records')
+
+
+
+#получаем топ3 фотки пользователя
+def top3_photos(photos_list):
+    top3 = [{'id': 0,
+             'likes': 0,
+             'url': ""}, 
+            {'id': 0, 
+             'likes': 0, 
+             'url': ""}, 
+            {'id': 0, 
+             'likes': 0, 
+             'url': ""}]
+    
+    for each in photos_list:
+        if each['likes']['count'] > top3[0]['likes']:
+            top3[2]['id'] = top3[1]['id']
+            top3[2]['likes'] = top3[1]['likes']
+            top3[2]['url'] = top3[1]['url']
+            top3[1]['id'] = top3[0]['id']
+            top3[1]['likes'] = top3[0]['likes']
+            top3[1]['url'] = top3[0]['url']
+            top3[0]['id'] = each['id']
+            top3[0]['likes'] = each['likes']['count']
+            top3[0]['url'] = each['sizes'][0]['url']
+        elif each['likes']['count'] > top3[1]['likes']:
+            top3[2]['id'] = top3[1]['id']
+            top3[2]['likes'] = top3[1]['likes']
+            top3[2]['url'] = top3[1]['url']
+            top3[1]['id'] = each['id']
+            top3[1]['likes'] = each['likes']['count']
+            top3[1]['url'] = each['sizes'][0]['url']
+        elif each['likes']['count'] > top3[2]['likes']:
+            top3[2]['id'] = each['id']
+            top3[2]['likes'] = each['likes']['count']
+            top3[2]['url'] = each['sizes'][0]['url']
+            
+    return top3
+
 
 
 
@@ -152,6 +198,7 @@ def write_in_database(db, lst):
     '''если список не пустой => записываем его в ДБ'''
     if lst:
         db.insert_many(lst)
+        print('В БД внесены данные')
     else:
         print('Нет данных для записи в БД')
 
@@ -163,22 +210,68 @@ def create_hrefs(df):
 
 
 
-def main():
+def sex_check():
+    try:
+        sex = int(input('Укажите пол для поиска\nженский = 1\nмужской = 2\n=> '))
+        if sex == 1 or sex == 2:
+            return sex
+        else:
+            print('так как выбрано не верное число - ищем девушек :)')
+            return 1
+    except:
+        print('так как выбрано не верное число - ищем девушек :)')
+        return 1
+
+
+
+def age_from_foo():
+    try:
+        age = int(input('Укажите минимальный возраст для поиска: '))
+    except:
+        age = 20
+    return age
+
+
+
+def age_to_foo():
+    try:
+        age = int(input('Укажите максимальный возраст для поиска: '))
+    except:
+        age = 30
+    return age
+
+
+
+def check_user_name():
+    user_name = input('Введите id пользователя для которого ищем кандидатуру: ')
+    if User(user_name).id == 'Invalid user id' or User(user_name).id == '':
+        return 'Invalid user id'
+    else:
+        return User(user_name)
+
+
+
+def main(users_collection):
     lst = filter_users(users_collection, raw_users_list)
     write_in_database(users_collection, lst)
     df = pd.DataFrame(list(users_collection.find()))
     filter = ['id', 'about', 'activities', 'books', 'city', 'common_count', 'country',
-            'first_name', 'games', 'bdate', 'home_town', 'interests', 
-            'last_name', 'movies', 'music', 'tv']
+              'first_name', 'games', 'bdate', 'home_town', 'interests', 
+              'last_name', 'movies', 'music', 'tv']
     df = df[filter]
     df['points'] = 0
     df = df.fillna('')
+   
     top10 = get_points(user, df)
-
-    print(top10)
-
-    top10_collection = users_DB['top10']
-    write_in_database(top10_collection, [top10])
+    top10_json = json.dumps(top10, ensure_ascii=False).encode("utf8")
+    write_in_database(top10_collection, top10)
+    
+    with open('top3.json', 'w', encoding='utf8') as file:
+        data = json.loads(top10_json)
+        json.dump(data, file, ensure_ascii=False)
+        print('файл top3.json создан успешно')
+    
+    pprint(json.loads(top10_json))
 
 
 
@@ -186,15 +279,25 @@ if __name__ == "__main__":
     fields = 'id, about, activities, books, city, common_count, country,\
               first_name, games, bdate, home_town, interests,\
               last_name, movies, music, tv'
-    sex = int(input('Укажите пол для поиска\nженский = 1\nмужской = 2\n=> '))
-    age_from = int(input('Укажите минимальный возраст для поиска: '))
-    age_to = int(input('Укажите максимальный возраст для поиска: '))
-    user_name = input('Введите id пользователя для которого ищем кандидатуру: ')
-    user = User(user_name)
-    raw_users_list = user.search_users(fields, sex, age_from, age_to)['response']['items']
-
-    client = MongoClient()
-    users_DB = client['VK_Inder']
-    users_collection = users_DB['users']
-
-    main()
+    sex = sex_check()
+    age_from = age_from_foo()
+    age_to = age_to_foo()
+    user = check_user_name()
+    if user != 'Invalid user id':
+        raw_users_list = user.search_users(fields, sex, age_from, age_to)['response']['items']
+        client = MongoClient()
+        users_DB = client['VK_Inder']
+        users_DB.top10.drop()
+        top10_collection = users_DB['top10']
+        if sex == 1:
+            users_collection_wooman = users_DB['users_wooman']
+            main(users_collection_wooman)
+        elif sex == 2:
+            users_collection_man = users_DB['users_man']
+            main(users_collection_man)
+        else:
+            print('Не верно указан пол. Должно быть 1 или 2')
+    else:
+        print('Нет пользователя с указанныс id')
+    
+    
