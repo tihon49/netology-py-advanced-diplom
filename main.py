@@ -59,10 +59,10 @@ def get_points(user, df):
     user_info = check_users_params(user)
     user_groups = user.get_groups_ids()
     
-    count = 0
+    # count = 0
     for u_id in df.id:
-        if count == 10:
-            break
+        # if count == 10:
+        #     break
 
         curent_user = df.loc[df.id == u_id] 
 
@@ -120,7 +120,7 @@ def get_points(user, df):
 
         
         print('.')
-        count += 1
+        # count += 1
 
     top10 = df[df['points'] > 0].sort_values(['points'], ascending=False).head(10)
     create_hrefs(top10)
