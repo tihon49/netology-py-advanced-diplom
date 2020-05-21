@@ -61,7 +61,7 @@ def get_points(user, df):
     
     count = 0
     for u_id in df.id:
-        if count == 20:
+        if count == 10:
             break
 
         curent_user = df.loc[df.id == u_id] 
@@ -124,9 +124,9 @@ def get_points(user, df):
 
     top10 = df[df['points'] > 0].sort_values(['points'], ascending=False).head(10)
     create_hrefs(top10)
-    new_filter = ['first_name', 'last_name', 'points', 'href']
-    top10 = top10[new_filter] 
-    return top10.to_dict(orient="index")
+    new_filter = ['id', 'first_name', 'last_name', 'points', 'href']
+    top10 = top10[new_filter]
+    return top10.to_dict()
 
 
 
@@ -175,9 +175,11 @@ def main():
     df = df.fillna('')
     top10 = get_points(user, df)
 
-    # top10_collection = users_DB['top10']
-    # write_in_database(top10_collection, [top10])
     print(top10)
+
+    top10_collection = users_DB['top10']
+    write_in_database(top10_collection, [top10])
+
 
 
 if __name__ == "__main__":
