@@ -172,7 +172,6 @@ def main():
     df['points'] = 0
     df = df.fillna('')
     top10 = get_points(user, df)
-
     top10_collection = users_DB['top10']
     write_in_database(top10_collection, top10)
     pprint(top10)
@@ -189,9 +188,7 @@ if __name__ == "__main__":
     user_name = input('Введите id пользователя для которого ищем кандидатуру: ')
     user = User(user_name)
     raw_users_list = user.search_users(fields, sex, age_from, age_to)['response']['items']
-
     client = MongoClient()
     users_DB = client['VK_Inder']
     users_collection = users_DB['users']
-
     main()
