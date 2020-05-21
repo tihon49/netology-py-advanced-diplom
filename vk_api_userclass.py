@@ -92,7 +92,24 @@ class User:
                   }
         data = self.get_response(url, params)
         return data
-        
+
+    #получаем фотки
+    def get_photos(self):
+        url = 'https://api.vk.com/method/photos.get'
+        params = {
+                'access_token': access_token,
+                'v': VERSION,
+                'user_id': self.id,
+                'extended': 1,
+                'count': 1000,
+                'album_id': 'profile'
+            }
+        data = self.get_response(url, params)
+        try:
+            return data['response']['items']
+        except:
+            return None
+      
     #получаем инфо о пользователе если указан возраст
     def get_user_info(self):
         url = 'https://api.vk.com/method/users.get'
@@ -260,4 +277,8 @@ class User:
 
 
 if __name__ == '__main__':
-    pass
+    tihon = User(418159898)
+    photos_likes_counter_list = []
+    for i in (photo['likes'] for photo in tihon.get_photos()):
+        photos_likes_counter_list.append(i['count'])
+    pprint(sorted(photos_likes_counter_list))
