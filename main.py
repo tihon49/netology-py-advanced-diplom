@@ -150,29 +150,28 @@ def top3_photos(photos_list):
     
     for each in photos_list:
         if each['likes']['count'] > top3[0]['likes']:
-            top3[2]['id'] = top3[1]['id']
+            # top3[2]['id'] = top3[1]['id']
             top3[2]['likes'] = top3[1]['likes']
             top3[2]['url'] = top3[1]['url']
-            top3[1]['id'] = top3[0]['id']
+            # top3[1]['id'] = top3[0]['id']
             top3[1]['likes'] = top3[0]['likes']
             top3[1]['url'] = top3[0]['url']
-            top3[0]['id'] = each['id']
+            # top3[0]['id'] = each['id']
             top3[0]['likes'] = each['likes']['count']
             top3[0]['url'] = each['sizes'][0]['url']
         elif each['likes']['count'] > top3[1]['likes']:
-            top3[2]['id'] = top3[1]['id']
+            # top3[2]['id'] = top3[1]['id']
             top3[2]['likes'] = top3[1]['likes']
             top3[2]['url'] = top3[1]['url']
-            top3[1]['id'] = each['id']
+            # top3[1]['id'] = each['id']
             top3[1]['likes'] = each['likes']['count']
             top3[1]['url'] = each['sizes'][0]['url']
         elif each['likes']['count'] > top3[2]['likes']:
-            top3[2]['id'] = each['id']
+            # top3[2]['id'] = each['id']
             top3[2]['likes'] = each['likes']['count']
             top3[2]['url'] = each['sizes'][0]['url']
             
     return top3
-
 
 
 
@@ -266,12 +265,11 @@ def main(users_collection):
     top10_json = json.dumps(top10, ensure_ascii=False).encode("utf8")
     write_in_database(top10_collection, top10)
     
+    pprint(json.loads(top10_json))
     with open('top3.json', 'w', encoding='utf8') as file:
         data = json.loads(top10_json)
-        json.dump(data, file, ensure_ascii=False)
-        print('файл top3.json создан успешно')
-    
-    pprint(json.loads(top10_json))
+        json.dump(data, file, ensure_ascii=False, indent=4)
+        print('файл top3.json создан успешно')   
 
 
 

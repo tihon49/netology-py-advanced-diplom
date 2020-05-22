@@ -9,7 +9,7 @@ app_id = APP_ID  # id приложения
 VERSION = 5.103
 
 
-# Задача №1
+#класс пользователя
 class User:
     def __init__(self, u_id):
         self.id = u_id
@@ -36,6 +36,10 @@ class User:
 
     # битовое И (x & y)
     def __and__(self, user2):
+        '''
+        команда print(User1 & User2) => экземпляры
+        класса общих друзкей
+        '''
         if self.get_friends() and user2.get_friends():
             user_1_friends = self.get_friends()
             user_2_friends = user2.get_friends()
@@ -62,18 +66,18 @@ class User:
             return data
 
     #получение данных текущего экземпляра класса
-    # def get_info_about_me(self, fields):
-    #     url = 'https://api.vk.com/method/users.get'
-    #     params = {'access_token': access_token,
-    #               'user_ids': self.id,
-    #               'fields': fields,
-    #               'v': VERSION
-    #               }
-    #     data = self.get_response(url, params)
-    #     if data['response']:
-    #         return data['response'][0]
-    #     else:
-    #         return 'Пользователь не найден'
+    def get_info_about_me(self, fields):
+        url = 'https://api.vk.com/method/users.get'
+        params = {'access_token': access_token,
+                  'user_ids': self.id,
+                  'fields': fields,
+                  'v': VERSION
+                  }
+        data = self.get_response(url, params)
+        if data['response']:
+            return data['response'][0]
+        else:
+            return 'Пользователь не найден'
 
     #поиск пользователей по заданным параметрам
     def search_users(self, fields, sex=1, age_from=20, age_to=30):
@@ -229,7 +233,6 @@ class User:
 
         if data.get('response'):
             friends_id = [friend['id'] for friend in data['response']['items'] if friend.get('id')]
-
             return friends_id
         else:
             return False
@@ -277,8 +280,4 @@ class User:
 
 
 if __name__ == '__main__':
-    tihon = User(418159898)
-    photos_likes_counter_list = []
-    for i in (photo['likes'] for photo in tihon.get_photos()):
-        photos_likes_counter_list.append(i['count'])
-    pprint(sorted(photos_likes_counter_list))
+    pass
