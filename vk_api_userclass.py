@@ -9,7 +9,7 @@ app_id = APP_ID  # id приложения
 VERSION = 5.103
 
 
-# Задача №1
+#класс пользователя
 class User:
     def __init__(self, u_id):
         self.id = u_id
@@ -25,7 +25,7 @@ class User:
         if data.get('response'):
             self.id = data['response'][0]['id']
         elif data.get('error'):
-            self.id = data['error']['error_msg']
+            self.id = 'Invalid user id'
 
     # при вызове функции print(user) вывод ссылки на его профиль в VK
     def __str__(self):
@@ -36,6 +36,10 @@ class User:
 
     # битовое И (x & y)
     def __and__(self, user2):
+        '''
+        команда print(User1 & User2) => экземпляры
+        класса общих друзкей
+        '''
         if self.get_friends() and user2.get_friends():
             user_1_friends = self.get_friends()
             user_2_friends = user2.get_friends()
@@ -70,10 +74,13 @@ class User:
                   'v': VERSION
                   }
         data = self.get_response(url, params)
-        return data
+        if data['response']:
+            return data['response'][0]
+        else:
+            return 'Пользователь не найден'
 
     #поиск пользователей по заданным параметрам
-    def search_users(self, fields, sex, age_from, age_to):
+    def search_users(self, fields, sex=1, age_from=20, age_to=30):
         url = 'https://api.vk.com/method/users.search'
         params = {'access_token': access_token,
                   'q': '',
@@ -89,8 +96,25 @@ class User:
                   }
         data = self.get_response(url, params)
         return data
-        
-    #получаем возраст пользователя
+
+    #получаем фотки
+    def get_photos(self):
+        url = 'https://api.vk.com/method/photos.get'
+        params = {
+                'access_token': access_token,
+                'v': VERSION,
+                'user_id': self.id,
+                'extended': 1,
+                'count': 1000,
+                'album_id': 'profile'
+            }
+        data = self.get_response(url, params)
+        try:
+            return data['response']['items']
+        except:
+            return None
+      
+    #получаем инфо о пользователе если указан возраст
     def get_user_info(self):
         url = 'https://api.vk.com/method/users.get'
         params = {'access_token': access_token,
@@ -101,7 +125,12 @@ class User:
                   }
         data = self.get_response(url, params)
         if data.get('response') and data['response'][0].get('bdate'):
-            return data
+            data['response'][0]['bdate'] = data['response'][0]['bdate'].split('.')[2]
+            return data['response'][0]
+        else:
+            bdata = input('укажите год рождения пользователя (4 цифры): ')
+            data['response'][0]['bdate'] = bdata
+            return data['response'][0]
 
     # получаем количество друзей из группы. type => int
     def get_group_contacts_count(self, g_id):
@@ -175,15 +204,19 @@ class User:
 
     #id всех групп пользователя
     def get_groups_ids(self):
-        url = f'https://api.vk.com/method/execute'
+        url = f'https://api.vk.com/method/groups.get'
         params = {'access_token': access_token,
                   'user_id': self.id,
-                  'code': 'return API.groups.get();',
+                  'extended': 1,
+                  'fields': 'members_count,counters,contacts,city,country',
+                  'count': 1000,
                   'v': VERSION
                   }
 
         data = self.get_response(url, params)
-        return data['response']['items']
+
+        return [g['id'] for g in data['response']['items']]
+
 
     # получаем список с друзьями. type => list
     def get_friends(self):
@@ -200,7 +233,6 @@ class User:
 
         if data.get('response'):
             friends_id = [friend['id'] for friend in data['response']['items'] if friend.get('id')]
-
             return friends_id
         else:
             return False
@@ -247,79 +279,5 @@ class User:
                   f'id{max_friends_id} - {max_count_of_friends}', end='')
 
 
-# функция к домашнему заданию
-def homeWork():
-    user_input = input('введите два id номера для поиска общих друзей: ').split()
-    if len(user_input) > 2:
-        print('введено больше двух id номеров')
-    elif len(user_input) < 2:
-        print('введено меньше двух id номеров')
-    elif User(user_input[0]) == 'NoneType' or User(user_input[1]) == 'NoneType':
-        print('указан не валидный id')
-    else:
-        user1 = User(user_input[0])
-        user2 = User(user_input[1])
-
-        # вывод общих друзей в виде экземпляров класса
-        pprint(user1 & user2)
-
-
-# функция получения экземпляра класса с указанным id
-def get_profile():
-    user_input = input('введите id полтзователя: ')
-    return User(user_input)
-
-
-def main(u_input, info):
-    if u_input not in range(10):
-        print('введена не верная команда')
-    elif u_input == 0:
-        print(info)
-    elif u_input == 1:
-        homeWork()
-    elif u_input == 2:
-        print(get_profile())
-    elif u_input == 3:
-        pprint(get_profile().get_groups())
-    elif u_input == 4:
-        friends = get_profile().get_friends()
-
-        if not friends:
-            print('не валидный id')
-        else:
-            pprint(friends)
-
-    elif u_input == 5:
-        pprint(get_profile().get_friends_online())
-    elif u_input == 6:
-        get_profile().get_uniq_groups()
-    elif u_input == 7:
-        get_profile().get_most_of_common_friends()
-    else:
-        print('просьба вводить только цифры')
-
-
 if __name__ == '__main__':
-    info = '''
-вызвать данное меню еще раз ............................. : 0
-получить список общих друзей у двух пользователей (ДЗ)... : 1
-получить ссылку на профиль в вк ..................(ДЗ)... : 2
-получить список названий всех групп пользователя ........ : 3
-получить список id всех друзей .......................... : 4
-получить список id друзей онлайн ........................ : 5
-получить список уникальных групп пользователя (ДИПЛОМ) .. : 6
-получить id пользователя с кем больше всего общих друзей  : 7
-#############################################################
-      [!]    ДЛЯ ВЫХОДА ИЗ ПРОГРАММЫ НАЖМИТЕ: q    [!]
-'''
-    print(info)
-
-    while True:
-        user_input = input('\nваш выбор: ')
-        if user_input.lower() == 'q':
-            break
-        else:
-            try:
-                main(int(user_input), info)
-            except ValueError:
-                print('просьба вводить только цифры')
+    pass
