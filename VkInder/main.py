@@ -1,4 +1,4 @@
-from vk_api_userclass import User
+from vkUser.vk_api_userclass import User
 from pprint import pprint
 from datetime import datetime, date
 from pymongo import MongoClient

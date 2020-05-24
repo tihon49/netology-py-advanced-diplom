@@ -1,4 +1,4 @@
-from config import *
+from VkInder.setings.config import *
 import requests
 from pprint import pprint
 import time
