@@ -1,15 +1,41 @@
-from VkInder.setings.config import *
+# from VkInder.setings.config import *
 import requests
-from pprint import pprint
 import time
 import json
+from urllib.parse import urlencode
 
-access_token = APP_TOKEN  # токен приложения
-app_id = APP_ID  # id приложения
+
+# access_token = APP_TOKEN  # токен приложения
+app_id = 7329381  # id приложения
 VERSION = 5.103
 
 
-#класс пользователя
+
+def get_auth_token():
+    AUTH_URL = 'https://oauth.vk.com/authorize'
+    AUTH_DATA = {
+        'client_id': app_id,
+        'redirect_uri': 'https://oauth.vk.com/blank.html',
+        'display': 'page',
+        'scope': 'friends,groups',
+        'response_type': 'token',
+    }
+    message = ('Скопируйте ссылку в браузер и перейдите по ней, согласитесь с '
+               'разрешениями. \nПосле вы попадёте на страницу url которой содержит '
+               'token для дальнейшей работы программы. \nToken начинается после '
+               '"access_token=" и до занака "&"\n'
+               'Скопируйте token в буфер обмена, далее его необхомо будет вставить')
+    print('?'.join((AUTH_URL, urlencode(AUTH_DATA))))
+    print(message)
+    print()
+    token = input('Введите получившийся токен:\n')
+    return token
+
+
+access_token = get_auth_token()
+
+
+# класс пользователя
 class User:
     def __init__(self, u_id):
         self.id = u_id
@@ -65,7 +91,7 @@ class User:
 
             return data
 
-    #получение данных текущего экземпляра класса
+    # получение данных текущего экземпляра класса
     def get_info_about_me(self, fields):
         url = 'https://api.vk.com/method/users.get'
         params = {'access_token': access_token,
@@ -79,7 +105,7 @@ class User:
         else:
             return 'Пользователь не найден'
 
-    #поиск пользователей по заданным параметрам
+    # поиск пользователей по заданным параметрам
     def search_users(self, fields, sex=1, age_from=20, age_to=30):
         url = 'https://api.vk.com/method/users.search'
         params = {'access_token': access_token,
@@ -97,24 +123,24 @@ class User:
         data = self.get_response(url, params)
         return data
 
-    #получаем фотки
+    # получаем фотки
     def get_photos(self):
         url = 'https://api.vk.com/method/photos.get'
         params = {
-                'access_token': access_token,
-                'v': VERSION,
-                'user_id': self.id,
-                'extended': 1,
-                'count': 1000,
-                'album_id': 'profile'
-            }
+            'access_token': access_token,
+            'v': VERSION,
+            'user_id': self.id,
+            'extended': 1,
+            'count': 1000,
+            'album_id': 'profile'
+        }
         data = self.get_response(url, params)
         try:
             return data['response']['items']
         except:
             return None
-      
-    #получаем инфо о пользователе если указан возраст
+
+    # получаем инфо о пользователе если указан возраст
     def get_user_info(self):
         url = 'https://api.vk.com/method/users.get'
         params = {'access_token': access_token,
@@ -198,11 +224,10 @@ class User:
         # else:
         #     groups = data['response']['items']
         #     return groups
-        
+
         return data
 
-
-    #id всех групп пользователя
+    # id всех групп пользователя
     def get_groups_ids(self):
         url = f'https://api.vk.com/method/groups.get'
         params = {'access_token': access_token,
@@ -216,7 +241,6 @@ class User:
         data = self.get_response(url, params)
 
         return [g['id'] for g in data['response']['items']]
-
 
     # получаем список с друзьями. type => list
     def get_friends(self):

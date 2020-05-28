@@ -1,6 +1,5 @@
-from vkUser.vk_api_userclass import User
+from VkInder.vkUser.vk_api_userclass import User
 from pprint import pprint
-from datetime import datetime, date
 from pymongo import MongoClient
 import pandas as pd
 import json
@@ -150,24 +149,18 @@ def top3_photos(photos_list):
     
     for each in photos_list:
         if each['likes']['count'] > top3[0]['likes']:
-            # top3[2]['id'] = top3[1]['id']
             top3[2]['likes'] = top3[1]['likes']
             top3[2]['url'] = top3[1]['url']
-            # top3[1]['id'] = top3[0]['id']
             top3[1]['likes'] = top3[0]['likes']
             top3[1]['url'] = top3[0]['url']
-            # top3[0]['id'] = each['id']
             top3[0]['likes'] = each['likes']['count']
             top3[0]['url'] = each['sizes'][0]['url']
         elif each['likes']['count'] > top3[1]['likes']:
-            # top3[2]['id'] = top3[1]['id']
             top3[2]['likes'] = top3[1]['likes']
             top3[2]['url'] = top3[1]['url']
-            # top3[1]['id'] = each['id']
             top3[1]['likes'] = each['likes']['count']
             top3[1]['url'] = each['sizes'][0]['url']
         elif each['likes']['count'] > top3[2]['likes']:
-            # top3[2]['id'] = each['id']
             top3[2]['likes'] = each['likes']['count']
             top3[2]['url'] = each['sizes'][0]['url']
             
@@ -242,7 +235,7 @@ def age_to_foo():
 
 
 def check_user_name():
-    user_name = input('Введите id пользователя для которого ищем кандидатуру: ')
+    user_name = input('Введите id/никнейм пользователя для которого ищем кандидатуру: ')
     if User(user_name).id == 'Invalid user id' or User(user_name).id == '':
         return 'Invalid user id'
     else:
@@ -288,8 +281,8 @@ if __name__ == "__main__":
         users_DB.top10.drop()
         top10_collection = users_DB['top10']
         if sex == 1:
-            users_collection_wooman = users_DB['users_wooman']
-            main(users_collection_wooman)
+            users_collection_woman = users_DB['users_woman']
+            main(users_collection_woman)
         elif sex == 2:
             users_collection_man = users_DB['users_man']
             main(users_collection_man)
