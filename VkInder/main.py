@@ -1,13 +1,8 @@
-from VkInder.vkUser.vk_api_userclass import User
 from VkInder.vkUser.check_settings import *
 from pprint import pprint
 from pymongo import MongoClient
 import pandas as pd
 import json
-
-
-
-
 
 
 
@@ -58,5 +53,3 @@ if __name__ == "__main__":
             print('Не верно указан пол. Должно быть 1 или 2')
     else:
         print('Нет пользователя с указанныс id')
-    
-    

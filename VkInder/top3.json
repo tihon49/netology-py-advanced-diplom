@@ -1,17 +1,17 @@
 [
     {
+        "first_name": "Кристина",
+        "last_name": "Миронова",
+        "points": 15,
+        "top3_photos": "https://sun9-12.userapi.com/c622031/v622031601/29d56/wyTsadglbNQ.jpg        ",
+        "href": "https://vk.com/id172475601"
+    },
+    {
         "first_name": "Екатерина",
         "last_name": "Левинская",
         "points": 9,
         "top3_photos": "https://sun9-32.userapi.com/c631725/v631725949/4fbf4/ukWERxhZiyM.jpg    https://sun9-20.userapi.com/c837333/v837333990/4e8ba/nhJSTQ6pQ90.jpg    https://sun9-44.userapi.com/c628619/v628619949/1f05a/hjsDtjS4IHc.jpg",
         "href": "https://vk.com/id151576949"
-    },
-    {
-        "first_name": "Кристина",
-        "last_name": "Миронова",
-        "points": 9,
-        "top3_photos": "https://sun9-12.userapi.com/c622031/v622031601/29d56/wyTsadglbNQ.jpg        ",
-        "href": "https://vk.com/id172475601"
     },
     {
         "first_name": "Софья",
@@ -45,7 +45,7 @@
         "first_name": "Софья",
         "last_name": "Акимова",
         "points": 6,
-        "top3_photos": NaN,
+        "top3_photos": "https://sun9-40.userapi.com/c627517/v627517371/2986b/ilewEoo59Pc.jpg    https://sun1-88.userapi.com/t68bK6LNdZyMJjwRIhR7ekQcJGdMpc2aMaRE-g/9c9wrKMpD24.jpg    https://sun9-71.userapi.com/c624831/v624831371/17662/mv47OHGinEo.jpg",
         "href": "https://vk.com/id223430371"
     },
     {
@@ -58,7 +58,7 @@
     {
         "first_name": "Анастасия",
         "last_name": "Алексеева",
-        "points": 2,
+        "points": 5,
         "top3_photos": "https://sun1-15.userapi.com/wlhWj8acCqmiLWuvrCofhznAeUvTvNEEY62ixg/RAxGN_ywX_Y.jpg    https://sun1-89.userapi.com/iQVruCLhVPA8IUhjzgK7AuGVZbRcNQvFNT_v7w/eh93vpjE_7Y.jpg    https://sun1-83.userapi.com/oZ3ClyZ0gltxWZ478a0umoCU0e7BYxUetae4zA/nrlml9VvNAY.jpg",
         "href": "https://vk.com/id5786733"
     }
