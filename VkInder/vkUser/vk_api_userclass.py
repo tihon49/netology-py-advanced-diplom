@@ -11,37 +11,18 @@ VERSION = 5.103
 
 
 
-def get_auth_token():
-    AUTH_URL = 'https://oauth.vk.com/authorize'
-    AUTH_DATA = {
-        'client_id': app_id,
-        'redirect_uri': 'https://oauth.vk.com/blank.html',
-        'display': 'page',
-        'scope': 'friends,groups',
-        'response_type': 'token',
-    }
-    message = ('Скопируйте ссылку в браузер и перейдите по ней, согласитесь с '
-               'разрешениями. \nПосле вы попадёте на страницу url которой содержит '
-               'token для дальнейшей работы программы. \nToken начинается после '
-               '"access_token=" и до занака "&"\n'
-               'Скопируйте token в буфер обмена, далее его необхомо будет вставить')
-    print('?'.join((AUTH_URL, urlencode(AUTH_DATA))))
-    print(message)
-    print()
-    token = input('Введите получившийся токен:\n')
-    return token
-
-
-access_token = get_auth_token()
-
-
 # класс пользователя
 class User:
+    access_token = ''
+
     def __init__(self, u_id):
         self.id = u_id
 
+        if not User.access_token:
+            User.access_token = self.get_auth_token()
+
         url = 'https://api.vk.com/method/users.get'
-        params = {'access_token': access_token,
+        params = {'access_token': User.access_token,
                   'user_ids': u_id,
                   'v': VERSION
                   }
@@ -91,10 +72,30 @@ class User:
 
             return data
 
+    def get_auth_token(self):
+        AUTH_URL = 'https://oauth.vk.com/authorize'
+        AUTH_DATA = {
+            'client_id': app_id,
+            'redirect_uri': 'https://oauth.vk.com/blank.html',
+            'display': 'page',
+            'scope': 'friends,groups',
+            'response_type': 'token',
+        }
+        message = ('Скопируйте ссылку в браузер и перейдите по ней, согласитесь с '
+                   'разрешениями. \nПосле вы попадёте на страницу url которой содержит '
+                   'token для дальнейшей работы программы. \nToken начинается после '
+                   '"access_token=" и до занака "&"\n'
+                   'Скопируйте token в буфер обмена, далее его необхомо будет вставить')
+        print('?'.join((AUTH_URL, urlencode(AUTH_DATA))))
+        print(message)
+        print()
+        token = input('Введите получившийся токен:\n')
+        return token
+
     # получение данных текущего экземпляра класса
     def get_info_about_me(self, fields):
         url = 'https://api.vk.com/method/users.get'
-        params = {'access_token': access_token,
+        params = {'access_token': User.access_token,
                   'user_ids': self.id,
                   'fields': fields,
                   'v': VERSION
@@ -108,7 +109,7 @@ class User:
     # поиск пользователей по заданным параметрам
     def search_users(self, fields, sex=1, age_from=20, age_to=30):
         url = 'https://api.vk.com/method/users.search'
-        params = {'access_token': access_token,
+        params = {'access_token': User.access_token,
                   'q': '',
                   'count': 1000,
                   'fields': fields,
@@ -127,7 +128,7 @@ class User:
     def get_photos(self):
         url = 'https://api.vk.com/method/photos.get'
         params = {
-            'access_token': access_token,
+            'access_token': User.access_token,
             'v': VERSION,
             'user_id': self.id,
             'extended': 1,
@@ -143,7 +144,7 @@ class User:
     # получаем инфо о пользователе если указан возраст
     def get_user_info(self):
         url = 'https://api.vk.com/method/users.get'
-        params = {'access_token': access_token,
+        params = {'access_token': User.access_token,
                   'user_ids': self.id,
                   'fields': 'bdate, sex, city, country, relation, relatives, connections,' \
                             'interests, music, movies, tv, books, games, about , is_friend, friend_status, career, military',
@@ -161,7 +162,7 @@ class User:
     # получаем количество друзей из группы. type => int
     def get_group_contacts_count(self, g_id):
         url = 'https://api.vk.com/method/groups.getMembers'
-        params = {'access_token': access_token,
+        params = {'access_token': User.access_token,
                   'group_id': g_id,
                   'filter': 'friends',
                   'v': VERSION
@@ -208,7 +209,7 @@ class User:
     # получаем список групп пользователя. type => list
     def get_groups(self):
         url = f'https://api.vk.com/method/groups.get'
-        params = {'access_token': access_token,
+        params = {'access_token': User.access_token,
                   'user_id': self.id,
                   'extended': 1,
                   'fields': 'members_count,counters,contacts,city,country',
@@ -230,7 +231,7 @@ class User:
     # id всех групп пользователя
     def get_groups_ids(self):
         url = f'https://api.vk.com/method/groups.get'
-        params = {'access_token': access_token,
+        params = {'access_token': User.access_token,
                   'user_id': self.id,
                   'extended': 1,
                   'fields': 'members_count,counters,contacts,city,country',
@@ -245,7 +246,7 @@ class User:
     # получаем список с друзьями. type => list
     def get_friends(self):
         url = f'https://api.vk.com/method/friends.get'
-        params = {'access_token': access_token,
+        params = {'access_token': User.access_token,
                   'v': VERSION,
                   'user_id': self.id,
                   'order': 'hints',
@@ -265,7 +266,7 @@ class User:
     def get_friends_online(self):
         url = 'https://api.vk.com/method/friends.getOnline'
         params = {
-            'access_token': access_token,
+            'access_token': User.access_token,
             'v': VERSION,
             'user_id': self.id
         }
@@ -304,4 +305,11 @@ class User:
 
 
 if __name__ == '__main__':
-    pass
+    # pass
+    tihon = User('tihon333')
+    print(tihon.access_token)
+    print(tihon)
+    print('#' * 10)
+    den = User('vindevi')
+    print(den.access_token)
+    print(den)

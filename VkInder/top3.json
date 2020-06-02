@@ -1,37 +1,72 @@
 [
     {
-        "first_name": "Екатерина",
-        "last_name": "Левинская",
-        "points": 39,
-        "top3_photos": "https://sun9-32.userapi.com/c631725/v631725949/4fbf4/ukWERxhZiyM.jpg    https://sun9-20.userapi.com/c837333/v837333990/4e8ba/nhJSTQ6pQ90.jpg    https://sun9-44.userapi.com/c628619/v628619949/1f05a/hjsDtjS4IHc.jpg",
-        "href": "https://vk.com/id151576949"
+        "first_name": "Roman",
+        "last_name": "Smirnov",
+        "points": 123,
+        "top3_photos": "https://sun9-23.userapi.com/c638018/v638018039/14c62/9IsGJ9sjZmo.jpg        ",
+        "href": "https://vk.com/id402990039"
     },
     {
-        "first_name": "Кристина",
-        "last_name": "Миронова",
+        "first_name": "Игорь",
+        "last_name": "Иванов",
+        "points": 93,
+        "top3_photos": "https://sun1-91.userapi.com/g_lUZ4fb0S1VJUZJGQ4xe6kIVvKXyiXiwC-DUA/TRhbAsQLSGY.jpg    https://sun9-69.userapi.com/c5788/u136194182/-6/s_43e4b515.jpg    https://sun9-52.userapi.com/c621717/v621717182/30708/FGtchHXv4eM.jpg",
+        "href": "https://vk.com/id136194182"
+    },
+    {
+        "first_name": "Денис",
+        "last_name": "Денисов",
         "points": 36,
-        "top3_photos": "https://sun9-12.userapi.com/c622031/v622031601/29d56/wyTsadglbNQ.jpg        ",
-        "href": "https://vk.com/id172475601"
+        "top3_photos": "https://sun9-20.userapi.com/c626226/v626226184/66a6/GqMPStycG8E.jpg    https://sun1-97.userapi.com/DOMU4Ldcqqep08SZhY-j_6G0YPRDrqK9InfD4w/wIhx1NH2DL0.jpg    https://sun1-99.userapi.com/IhJYEdrOImTXhgm0cla-iWdQK6zCDSPDuuTe2A/F_W9YSWPLYU.jpg",
+        "href": "https://vk.com/id24717184"
     },
     {
-        "first_name": "Анастасия",
-        "last_name": "Алексеева",
-        "points": 21,
-        "top3_photos": "https://sun1-15.userapi.com/wlhWj8acCqmiLWuvrCofhznAeUvTvNEEY62ixg/RAxGN_ywX_Y.jpg    https://sun1-89.userapi.com/iQVruCLhVPA8IUhjzgK7AuGVZbRcNQvFNT_v7w/eh93vpjE_7Y.jpg    https://sun1-83.userapi.com/oZ3ClyZ0gltxWZ478a0umoCU0e7BYxUetae4zA/nrlml9VvNAY.jpg",
-        "href": "https://vk.com/id5786733"
+        "first_name": "Vegan",
+        "last_name": "DJ",
+        "points": 33,
+        "top3_photos": "https://sun1-24.userapi.com/ZSYU-EnaxU67zsWCAPSNrkBg7W3piu4I5oo9Uw/N77oTKJnNnk.jpg    https://sun9-27.userapi.com/c308729/v308729522/6c3a/R1iHFIgDiVs.jpg    https://sun1-24.userapi.com/11WF01fC1Aau8KOcQ-l-ykE3cJrzbvdoVarmeQ/n_4cWdG3BaE.jpg",
+        "href": "https://vk.com/id9646522"
     },
     {
-        "first_name": "Лена",
-        "last_name": "Головач",
+        "first_name": "Александр",
+        "last_name": "Аксёнов",
+        "points": 24,
+        "top3_photos": "https://sun9-23.userapi.com/c627620/v627620917/34017/tBsujheWIsI.jpg    https://sun1-84.userapi.com/W5mkXTdzkUkGuu1KzzjCGnYjhKodbTtHlNvAWA/RNIjYvkIZ2s.jpg    https://sun9-60.userapi.com/c625824/v625824917/38aa/rUHs5b3ykR4.jpg",
+        "href": "https://vk.com/id167296917"
+    },
+    {
+        "first_name": "Дима",
+        "last_name": "Дима",
         "points": 12,
-        "top3_photos": "https://sun9-5.userapi.com/c5692/u38507945/-6/s_8ff54c1e.jpg    https://sun9-5.userapi.com/c5691/u38507945/-6/s_d799541d.jpg    https://sun9-5.userapi.com/c5691/u38507945/-6/s_2534246e.jpg",
-        "href": "https://vk.com/id38507945"
+        "top3_photos": "https://sun9-14.userapi.com/c10777/v10777757/520/3qq6fflOKS8.jpg    https://sun9-64.userapi.com/c9888/u93233757/-6/s_9e6a2534.jpg    https://sun9-64.userapi.com/c9888/u93233757/-6/s_2ac18fe0.jpg",
+        "href": "https://vk.com/id93233757"
     },
     {
-        "first_name": "Софья",
-        "last_name": "Темникова",
-        "points": 3,
-        "top3_photos": "https://sun1-47.userapi.com/owapj1q-Y8eFoJLA9mO3lxFne3SbVrs2VXPj9Q/9q3VPmWHTPc.jpg    https://sun1-28.userapi.com/DtoNCx9zqIyS5d6PaivoYtcNnFGT2NjpWKnSUQ/xgXLTfnn6bo.jpg    https://sun1-18.userapi.com/xTw2p7j3FowAPyix5CTHr_tVhBDZx5zR2Ctc3g/w9BQlGT6nM8.jpg",
-        "href": "https://vk.com/id2183659"
+        "first_name": "Александр",
+        "last_name": "Соловьев",
+        "points": 6,
+        "top3_photos": NaN,
+        "href": "https://vk.com/id217664937"
+    },
+    {
+        "first_name": "Савелий",
+        "last_name": "Воронин",
+        "points": 6,
+        "top3_photos": NaN,
+        "href": "https://vk.com/id44051249"
+    },
+    {
+        "first_name": "Даня",
+        "last_name": "Милохин",
+        "points": 6,
+        "top3_photos": "https://sun9-27.userapi.com/c206828/v206828765/12e7b7/MuDs6N1Xy8o.jpg        ",
+        "href": "https://vk.com/id364737356"
+    },
+    {
+        "first_name": "Вадим",
+        "last_name": "Хомич",
+        "points": 2,
+        "top3_photos": "https://sun9-66.userapi.com/c627130/v627130926/2427c/ZyEx2yaVPYE.jpg        ",
+        "href": "https://vk.com/id107721926"
     }
 ]
