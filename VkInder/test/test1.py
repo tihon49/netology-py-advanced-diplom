@@ -3,7 +3,7 @@ from unittest.mock import patch
 import VkInder.vkUser.vk_api_userclass as app
 
 
-
+#необходимо подставить свой токен
 access_token = 'b783b0b47736f24cf606e4c9d32d404674a55f1069ce3a073bc463c8ae0715e97c44e8c0e66e903a5f65c'
 
 
